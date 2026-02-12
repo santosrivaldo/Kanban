@@ -6,11 +6,15 @@ export function registerPeopleRoutes(app) {
   });
 
   app.post('/api/people', (req, res) => {
-    const { name, online } = req.body || {};
+    const { name, online, workStatus } = req.body || {};
     if (!name || !String(name).trim()) {
       return res.status(400).json({ error: 'name é obrigatório' });
     }
-    const person = store.addPerson({ name: String(name).trim(), online: Boolean(online) });
+    const person = store.addPerson({
+      name: String(name).trim(),
+      online: Boolean(online),
+      workStatus: workStatus != null ? String(workStatus).trim() : '',
+    });
     res.status(201).json(person);
   });
 

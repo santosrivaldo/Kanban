@@ -165,15 +165,22 @@ body {
 /* Main */
 .main {
   flex: 1;
-  padding: 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 0;
+  min-height: 0;
   width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .token-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   padding: 3rem 2rem;
+  margin: 1.5rem;
   background: var(--bg-card);
   border: 1px dashed var(--border);
   border-radius: var(--radius);
@@ -197,7 +204,8 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  overflow: auto;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .view-panel[hidden] {
@@ -257,6 +265,8 @@ body {
   padding: 1.5rem 2rem;
   max-width: 720px;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
 }
 
 .view-docs .docs-content h1 { font-size: 1.75rem; margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
@@ -274,12 +284,14 @@ body {
 .view-docs .docs-content hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
 .view-docs .docs-placeholder { color: var(--text-muted); }
 
-/* Board layout: sidebar esquerda + área do kanban */
+/* Board layout: sidebar esquerda + área do kanban até o fim da tela */
 .board-layout {
   display: flex;
   flex: 1;
   min-height: 0;
+  min-width: 0;
   gap: 0;
+  width: 100%;
 }
 
 .board-sidebar {
@@ -344,10 +356,31 @@ body {
   box-shadow: 0 0 6px var(--success);
 }
 
+.person-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
 .person-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 500;
+}
+
+.person-work-status {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.person-row.online .person-work-status {
+  color: var(--accent);
 }
 
 .people-empty {
@@ -355,13 +388,14 @@ body {
   color: var(--text-muted);
 }
 
-/* Board main */
+/* Board main: ocupa todo o espaço à direita; rolagem só nas colunas */
 .board-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   min-width: 0;
   padding: 1rem;
+  overflow: hidden;
 }
 
 .board-header {
@@ -381,9 +415,12 @@ body {
   display: flex;
   gap: 1rem;
   overflow-x: auto;
+  overflow-y: hidden;
   padding-bottom: 1rem;
   min-height: 380px;
   flex: 1;
+  min-width: 0;
+  align-items: stretch;
 }
 
 .column {

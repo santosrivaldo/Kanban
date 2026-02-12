@@ -103,19 +103,19 @@ As ações de criar, mover, editar e remover cards registram o header **X-Agent*
 
 ### 3.9 Pessoas (equipe)
 
-Usadas como responsáveis nas tarefas. Nome e status online.
+Usadas como responsáveis nas tarefas. Nome, online e status de trabalho.
 
 ```
 GET /api/people
 ```
 - **Auth:** sim
-- **Resposta 200:** array de pessoas (`id`, `name`, `online`, `updatedAt`)
+- **Resposta 200:** array de pessoas (`id`, `name`, `online`, `workStatus`, `updatedAt`)
 
 ```
 POST /api/people
 ```
 - **Auth:** sim
-- **Body:** `name` (obrigatório), `online` (opcional, boolean, default false)
+- **Body:** `name` (obrigatório), `online` (opcional, boolean, default false), `workStatus` (opcional, string – ex.: "Em tarefa", "Disponível")
 - **Resposta 201:** objeto da pessoa criada
 - **Resposta 400:** `{ "error": "name é obrigatório" }`
 
@@ -123,7 +123,7 @@ POST /api/people
 PATCH /api/people/:id
 ```
 - **Auth:** sim
-- **Body:** `name`, `online` (opcionais)
+- **Body:** `name`, `online`, `workStatus` (opcionais)
 - **Resposta 200:** pessoa atualizada | **404:** pessoa não encontrada
 
 ```

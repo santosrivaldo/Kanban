@@ -114,12 +114,18 @@ function renderPeopleList() {
     return;
   }
   if (empty) empty.classList.add('hidden');
-  el.innerHTML = peopleList.map((p) => `
-    <div class="person-row ${p.online ? 'online' : ''}" title="${escapeHtml(p.name)} ${p.online ? '• online' : '• offline'}">
+  el.innerHTML = peopleList.map((p) => {
+    const status = (p.workStatus || '').trim() || (p.online ? 'Disponível' : 'Offline');
+    return `
+    <div class="person-row ${p.online ? 'online' : ''}" title="${escapeHtml(p.name)} • ${escapeHtml(status)}">
       <span class="person-dot"></span>
-      <span class="person-name">${escapeHtml(p.name)}</span>
+      <div class="person-info">
+        <span class="person-name">${escapeHtml(p.name)}</span>
+        <span class="person-work-status">${escapeHtml(status)}</span>
+      </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function fillAssigneeSelect() {

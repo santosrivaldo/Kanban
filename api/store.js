@@ -122,11 +122,12 @@ export const store = {
   getPerson(personId) {
     return data.people.find((p) => p.id === personId) ?? null;
   },
-  addPerson({ name, online = false }) {
+  addPerson({ name, online = false, workStatus = '' }) {
     const person = {
       id: `person-${id()}`,
       name: (name || '').trim(),
       online: Boolean(online),
+      workStatus: String(workStatus || '').trim(),
       updatedAt: new Date().toISOString(),
     };
     data.people.push(person);
@@ -138,6 +139,7 @@ export const store = {
     if (!person) return null;
     if (updates.name !== undefined) person.name = String(updates.name).trim();
     if (updates.online !== undefined) person.online = Boolean(updates.online);
+    if (updates.workStatus !== undefined) person.workStatus = String(updates.workStatus || '').trim();
     person.updatedAt = new Date().toISOString();
     persist();
     return person;
