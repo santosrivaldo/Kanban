@@ -755,21 +755,183 @@ body {
   padding: 2rem;
 }
 
-/* Responsivo */
+/* ========== Responsividade (cada tela se adapta ao tamanho) ========== */
+
+/* Tablet: layout mais compacto */
+@media (max-width: 1024px) {
+  .board-sidebar {
+    width: 240px;
+    padding: 0.75rem;
+  }
+  .column {
+    flex: 0 0 260px;
+  }
+  .board-main {
+    padding: 0.75rem;
+  }
+  .view-docs .docs-content {
+    max-width: none;
+    padding: 1rem 1.25rem;
+  }
+}
+
+/* Tablet pequeno: sidebar do board em cima */
+@media (max-width: 768px) {
+  .board-layout {
+    flex-direction: column;
+    min-height: 0;
+  }
+  .board-sidebar {
+    width: 100%;
+    max-height: 40vh;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .board-sidebar .sidebar-section {
+    flex: 1 1 200px;
+    min-width: 0;
+  }
+  .sidebar-timeline .timeline-list {
+    max-height: 160px;
+  }
+  .board-main {
+    padding: 1rem;
+    min-height: 50vh;
+  }
+  .columns {
+    min-height: 320px;
+  }
+  .column {
+    flex: 0 0 240px;
+  }
+  /* Documentação: nav em cima */
+  .view-docs .docs-inner {
+    flex-direction: column;
+  }
+  .view-docs .docs-nav {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem;
+  }
+  .view-docs .docs-content {
+    padding: 1rem;
+  }
+  .modal {
+    width: 95vw;
+    max-width: none;
+  }
+}
+
+/* Mobile */
 @media (max-width: 640px) {
+  .header {
+    padding: 0.5rem 1rem;
+  }
   .header-inner {
     flex-direction: column;
     align-items: stretch;
+    gap: 0.75rem;
+  }
+  .header-nav {
+    order: 1;
+  }
+  .token-wrap {
+    order: 2;
   }
   .token-wrap input {
     width: 100%;
+    min-width: 0;
+  }
+  .main {
+    padding: 1rem;
+  }
+  .board-sidebar {
+    max-height: 35vh;
+    flex-direction: column;
+  }
+  .board-sidebar .sidebar-section {
+    flex: none;
+  }
+  .sidebar-timeline .timeline-list {
+    max-height: 140px;
+  }
+  .board-main {
+    padding: 0.75rem;
+  }
+  .board-header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .board-header h2 {
+    font-size: 1.1rem;
   }
   .columns {
     flex-direction: column;
     align-items: stretch;
+    min-height: 280px;
   }
   .column {
     flex: 1 1 auto;
-    max-width: none;
+    min-height: 200px;
+    max-height: 320px;
+  }
+  .card {
+    padding: 0.6rem 0.75rem;
+  }
+  .card-title {
+    font-size: 0.9rem;
+  }
+  .token-screen {
+    padding: 2rem 1rem;
+  }
+  .modal-form {
+    padding: 1rem;
+  }
+  .modal-actions {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .modal-actions .btn-danger {
+    order: 1;
+    width: 100%;
+  }
+  .modal-actions-right {
+    order: 2;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.15rem;
+  }
+  .nav-tab {
+    font-size: 0.85rem;
+  }
+  .board-sidebar {
+    padding: 0.75rem;
+  }
+  .sidebar-title {
+    font-size: 0.8rem;
+  }
+  .person-row {
+    font-size: 0.85rem;
+  }
+  .column-header {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  .view-docs .docs-nav .doc-link {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
   }
 }
