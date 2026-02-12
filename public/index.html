@@ -35,29 +35,32 @@
       <div id="views" class="views hidden">
         <!-- Board -->
         <div id="view-board" class="view-panel" role="tabpanel" hidden>
-          <div class="board-wrap">
-            <div class="board-header">
-              <div class="board-title-row">
+          <div class="board-layout">
+            <aside class="board-sidebar">
+              <section class="sidebar-section sidebar-agents" aria-label="Agentes">
+                <h3 class="sidebar-title">Agentes</h3>
+                <div id="people-list" class="people-list-vertical"></div>
+                <p id="people-empty" class="people-empty hidden">Nenhum agente recebido pela API.</p>
+              </section>
+              <section class="sidebar-section sidebar-timeline" aria-label="Timeline">
+                <h3 class="sidebar-title">Timeline</h3>
+                <div class="timeline-filters">
+                  <select id="filter-agent" aria-label="Filtrar por agente">
+                    <option value="">Todos os agentes</option>
+                  </select>
+                  <button type="button" id="btn-timeline-refresh" class="btn-secondary btn-sm">Atualizar</button>
+                </div>
+                <div id="timeline-list" class="timeline-list"></div>
+                <div id="timeline-empty" class="timeline-empty hidden">Nenhuma atividade ainda.</div>
+              </section>
+            </aside>
+            <div class="board-main">
+              <div class="board-header">
                 <h2 id="board-name">Sprint Atual</h2>
                 <button type="button" id="btn-new-card" class="btn-primary">Nova tarefa</button>
               </div>
-              <div class="board-people" id="board-people">
-                <span class="people-label">Equipe</span>
-                <div id="people-list" class="people-list"></div>
-              </div>
+              <div id="columns" class="columns"></div>
             </div>
-            <div id="columns" class="columns"></div>
-            <section class="board-timeline" aria-label="Timeline">
-              <div class="timeline-filters">
-                <label for="filter-agent">Timeline</label>
-                <select id="filter-agent">
-                  <option value="">Todos os agentes</option>
-                </select>
-                <button type="button" id="btn-timeline-refresh" class="btn-secondary">Atualizar</button>
-              </div>
-              <div id="timeline-list" class="timeline-list"></div>
-              <div id="timeline-empty" class="timeline-empty hidden">Nenhuma atividade ainda.</div>
-            </section>
           </div>
         </div>
 

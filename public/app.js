@@ -55,7 +55,9 @@ function startBoardRefresh() {
   stopBoardRefresh();
   refreshIntervalId = setInterval(() => {
     if (currentView !== 'board') return;
-    loadBoard().catch(() => {});
+    refreshCardsOnly().catch(() => {});
+    loadPeople().catch(() => {});
+    loadTimeline().catch(() => {});
   }, BOARD_REFRESH_MS);
 }
 
@@ -104,10 +106,20 @@ async function loadPeople() {
 
 function renderPeopleList() {
   const el = document.getElementById('people-list');
+  const empty = document.getElementById('people-empty');
   if (!el) return;
-  el.innerHTML = peopleList.length === 0
-    ? '<span class="people-empty">Nenhuma pessoa cadastrada</span>'
-    : peopleList.map((p) => `<span class="person-chip ${p.online ? 'online' : ''}" title="${escapeHtml(p.name)} ${p.online ? '• online' : '• offline'}">${escapeHtml(p.name)}</span>`).join('');
+  if (peopleList.length === 0) {
+    el.innerHTML = '';
+    if (empty) empty.classList.remove('hidden');
+    return;
+  }
+  if (empty) empty.classList.add('hidden');
+  el.innerHTML = peopleList.map((p) => `
+    <div class="person-row ${p.online ? 'online' : ''}" title="${escapeHtml(p.name)} ${p.online ? '• online' : '• offline'}">
+      <span class="person-dot"></span>
+      <span class="person-name">${escapeHtml(p.name)}</span>
+    </div>
+  `).join('');
 }
 
 function fillAssigneeSelect() {
@@ -131,7 +143,7 @@ async function loadBoard() {
   for (const col of columns) {
     const cards = await api(`/api/columns/${col.id}/cards`);
     const colEl = document.createElement('div');
-    colEl.className = 'column';
+    colEl.className = `column column-phase column-${col.id}`;
     colEl.dataset.columnId = col.id;
     colEl.innerHTML = `
       <div class="column-header">
@@ -146,6 +158,24 @@ async function loadBoard() {
     container.appendChild(colEl);
   }
   loadTimeline();
+}
+
+/** Atualiza apenas as tarefas (cards) e a lista de agentes/timeline, sem recarregar a tela. */
+async function refreshCardsOnly() {
+  const container = document.getElementById('columns');
+  if (!container || !container.querySelector('.column')) return;
+  const columns = await api('/api/board/columns');
+  for (const col of columns) {
+    const cards = await api(`/api/columns/${col.id}/cards`);
+    const colEl = container.querySelector(`.column[data-column-id="${col.id}"]`);
+    if (!colEl) continue;
+    const header = colEl.querySelector('.column-header .count');
+    if (header) header.textContent = cards.length;
+    const cardsContainer = colEl.querySelector('.column-cards');
+    if (!cardsContainer) continue;
+    cardsContainer.innerHTML = '';
+    cards.forEach((card) => cardsContainer.appendChild(renderCard(card)));
+  }
 }
 
 function escapeHtml(s) {
@@ -184,7 +214,8 @@ async function deleteCard(card) {
   if (!confirm(`Excluir a tarefa "${card.title}"?`)) return;
   try {
     await api(`/api/cards/${card.id}`, { method: 'DELETE' });
-    await loadBoard();
+    await refreshCardsOnly();
+    loadTimeline();
     showToast('Tarefa excluída.', true);
   } catch (err) {
     showToast(err.message, false);
@@ -231,7 +262,8 @@ function setupColumnDrop(columnEl, cardsContainer) {
         method: 'PATCH',
         body: JSON.stringify({ columnId, order: 0 }),
       });
-      await loadBoard();
+      await refreshCardsOnly();
+      loadTimeline();
       showToast('Tarefa movida.', true);
     } catch (err) {
       showToast(err.message, false);
@@ -310,7 +342,8 @@ form.addEventListener('submit', async (e) => {
       showToast('Tarefa criada.', true);
     }
     modal.close();
-    loadBoard();
+    await refreshCardsOnly();
+    loadTimeline();
   } catch (err) {
     showToast(err.message, false);
   }
