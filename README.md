@@ -84,8 +84,12 @@ O projeto inclui um **módulo de documentação** em `docs/`:
 
 Na aplicação, acesse **Documentação** no menu ou `http://localhost:3000/docs.html`. A API expõe o conteúdo em Markdown em `GET /api/docs/:name` (nome: `README`, `API` ou `USO`), sem necessidade de token.
 
+## Banco de dados
+
+Os dados (boards, colunas, cards, pessoas, timeline) são gravados no arquivo **data/db.json**. Ao iniciar, o servidor carrega esse arquivo; se não existir, usa os dados iniciais e cria o arquivo na primeira alteração. A pasta `data/` está no `.gitignore`.
+
 ## Tecnologias
 
 - **Backend:** Node.js, Express
 - **Frontend:** HTML, CSS, JavaScript (vanilla)
-- Dados em memória (reiniciar o servidor zera o board)
+- **Persistência:** arquivo JSON em `data/db.json`

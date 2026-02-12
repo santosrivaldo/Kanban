@@ -136,7 +136,10 @@ function renderCard(card) {
   div.draggable = true;
   div.dataset.cardId = card.id;
   div.innerHTML = `
-    <p class="card-title">${escapeHtml(card.title)}</p>
+    <div class="card-head">
+      <p class="card-title">${escapeHtml(card.title)}</p>
+      <button type="button" class="card-delete" aria-label="Excluir tarefa" title="Excluir">×</button>
+    </div>
     <div class="card-meta">
       <span class="priority ${card.priority}">${card.priority}</span>
       ${card.assignee ? `<span>${escapeHtml(card.assignee)}</span>` : ''}
@@ -145,20 +148,43 @@ function renderCard(card) {
   div.addEventListener('dragstart', onCardDragStart);
   div.addEventListener('dragend', onCardDragEnd);
   div.addEventListener('dblclick', () => openEditCard(card));
+  div.querySelector('.card-delete').addEventListener('click', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    deleteCard(card);
+  });
   return div;
+}
+
+async function deleteCard(card) {
+  if (!confirm(`Excluir a tarefa "${card.title}"?`)) return;
+  try {
+    await api(`/api/cards/${card.id}`, { method: 'DELETE' });
+    await loadBoard();
+    showToast('Tarefa excluída.', true);
+  } catch (err) {
+    showToast(err.message, false);
+  }
 }
 
 let draggedCardId = null;
 
 function onCardDragStart(e) {
-  draggedCardId = e.target.dataset.cardId;
-  e.target.classList.add('dragging');
+  if (e.target.closest('.card-delete')) {
+    e.preventDefault();
+    return;
+  }
+  const card = e.target.closest('.card');
+  if (!card) return;
+  draggedCardId = card.dataset.cardId;
+  card.classList.add('dragging');
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/plain', draggedCardId);
 }
 
 function onCardDragEnd(e) {
-  e.target.classList.remove('dragging');
+  const card = e.target.closest('.card');
+  if (card) card.classList.remove('dragging');
   document.querySelectorAll('.column-cards').forEach((c) => c.classList.remove('drag-over'));
   draggedCardId = null;
 }
@@ -201,6 +227,8 @@ function openNewCard(columnId) {
   document.getElementById('card-desc').value = '';
   document.getElementById('card-assignee').value = '';
   document.getElementById('card-priority').value = 'medium';
+  const btnDelete = document.getElementById('btn-modal-delete');
+  if (btnDelete) btnDelete.hidden = true;
   modal.showModal();
 }
 
@@ -213,6 +241,18 @@ function openEditCard(card) {
   document.getElementById('card-desc').value = card.description || '';
   document.getElementById('card-assignee').value = card.assignee || '';
   document.getElementById('card-priority').value = card.priority || 'medium';
+  const btnDelete = document.getElementById('btn-modal-delete');
+  if (btnDelete) {
+    btnDelete.hidden = false;
+    btnDelete.onclick = () => {
+      if (!confirm(`Excluir a tarefa "${card.title}"?`)) return;
+      modal.close();
+      api(`/api/cards/${card.id}`, { method: 'DELETE' })
+        .then(() => loadBoard())
+        .then(() => showToast('Tarefa excluída.', true))
+        .catch((err) => showToast(err.message, false));
+    };
+  }
   modal.showModal();
 }
 

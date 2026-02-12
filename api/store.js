@@ -1,14 +1,18 @@
 /**
- * Store em memória para boards, colunas e cards.
- * Persistência opcional em JSON pode ser adicionada depois.
+ * Store persistido em arquivo JSON (data/db.json).
+ * Carrega ao iniciar e grava após cada alteração.
  */
-let data = {
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DB_DIR = path.join(__dirname, '..', 'data');
+const DB_FILE = path.join(DB_DIR, 'db.json');
+
+const DEFAULT_DATA = {
   boards: [
-    {
-      id: 'board-1',
-      name: 'Sprint Atual',
-      createdAt: new Date().toISOString(),
-    },
+    { id: 'board-1', name: 'Sprint Atual', createdAt: new Date().toISOString() },
   ],
   columns: [
     { id: 'col-backlog', boardId: 'board-1', title: 'Backlog', order: 0 },
@@ -53,6 +57,32 @@ let data = {
   ],
 };
 
+function load() {
+  try {
+    if (fs.existsSync(DB_FILE)) {
+      const raw = fs.readFileSync(DB_FILE, 'utf8');
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object' && Array.isArray(parsed.boards)) {
+        return parsed;
+      }
+    }
+  } catch (err) {
+    console.warn('Banco não encontrado ou inválido, usando dados iniciais:', err.message);
+  }
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+function persist() {
+  try {
+    fs.mkdirSync(DB_DIR, { recursive: true });
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Erro ao salvar banco:', err.message);
+  }
+}
+
+let data = load();
+
 function id() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
@@ -83,6 +113,7 @@ export const store = {
       ...payload,
     };
     data.events.push(ev);
+    persist();
     return ev;
   },
   getPeople() {
@@ -99,6 +130,7 @@ export const store = {
       updatedAt: new Date().toISOString(),
     };
     data.people.push(person);
+    persist();
     return person;
   },
   updatePerson(personId, updates) {
@@ -107,12 +139,14 @@ export const store = {
     if (updates.name !== undefined) person.name = String(updates.name).trim();
     if (updates.online !== undefined) person.online = Boolean(updates.online);
     person.updatedAt = new Date().toISOString();
+    persist();
     return person;
   },
   deletePerson(personId) {
     const i = data.people.findIndex((p) => p.id === personId);
     if (i === -1) return false;
     data.people.splice(i, 1);
+    persist();
     return true;
   },
   getTimeline(agentFilter) {
@@ -135,6 +169,7 @@ export const store = {
       order: data.cards.filter((c) => c.columnId === columnId).length,
     };
     data.cards.push(card);
+    persist();
     return card;
   },
   moveCard(cardId, columnId, order = 0) {
@@ -142,6 +177,7 @@ export const store = {
     if (!card) return null;
     card.columnId = columnId;
     card.order = order;
+    persist();
     return card;
   },
   updateCard(cardId, updates) {
@@ -151,12 +187,14 @@ export const store = {
     allowed.forEach((k) => {
       if (updates[k] !== undefined) card[k] = updates[k];
     });
+    persist();
     return card;
   },
   deleteCard(cardId) {
     const i = data.cards.findIndex((c) => c.id === cardId);
     if (i === -1) return false;
     data.cards.splice(i, 1);
+    persist();
     return true;
   },
 };
