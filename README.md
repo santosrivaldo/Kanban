@@ -14,6 +14,18 @@ Acesse: **http://localhost:3000**
 
 O arquivo **.env** define os tokens aceitos pela API. Copie `.env.example` para `.env` e edite se quiser outro token. O `.env` não vai para o repositório (está no `.gitignore`).
 
+### Rodar com Docker
+
+```bash
+# Com token padrão (sprint-token-2025)
+docker compose up --build
+
+# Com seu token: crie .env com X_TOKENS=seu-token ou:
+X_TOKENS=meu-token docker compose up --build
+```
+
+Acesse **http://localhost:3000**. A imagem usa Node 20 Alpine; o token é passado pela variável `X_TOKENS` (no `.env` ou no ambiente).
+
 ## Autenticação (X-Token)
 
 Todas as rotas da API (exceto `GET /api/health` e `GET /api/docs/:name`) exigem o header:

@@ -2,8 +2,8 @@ node_modules
 .env
 .git
 .gitignore
-*.md
-!docs/*.md
+README.md
+DOCS.md
 Dockerfile
 docker-compose.yml
 .dockerignore

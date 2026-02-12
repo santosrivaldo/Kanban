@@ -5,6 +5,5 @@ services:
       - "3000:3000"
     environment:
       PORT: 3000
+      # Use X_TOKENS do .env ou variável de ambiente; senão usa o valor abaixo
       X_TOKENS: ${X_TOKENS:-sprint-token-2025}
-    env_file:
-      - .env
