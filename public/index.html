@@ -38,8 +38,14 @@
         <div id="view-board" class="view-panel" role="tabpanel" hidden>
           <div class="board-wrap">
             <div class="board-header">
-              <h2 id="board-name">Sprint Atual</h2>
-              <button type="button" id="btn-new-card" class="btn-primary">Nova tarefa</button>
+              <div class="board-title-row">
+                <h2 id="board-name">Sprint Atual</h2>
+                <button type="button" id="btn-new-card" class="btn-primary">Nova tarefa</button>
+              </div>
+              <div class="board-people" id="board-people">
+                <span class="people-label">Equipe</span>
+                <div id="people-list" class="people-list"></div>
+              </div>
             </div>
             <div id="columns" class="columns"></div>
           </div>
@@ -87,7 +93,9 @@
       <label for="card-desc">Descrição</label>
       <textarea id="card-desc" name="description" rows="3"></textarea>
       <label for="card-assignee">Responsável</label>
-      <input id="card-assignee" name="assignee" />
+      <select id="card-assignee" name="assignee">
+        <option value="">Ninguém</option>
+      </select>
       <label for="card-priority">Prioridade</label>
       <select id="card-priority" name="priority">
         <option value="low">Baixa</option>

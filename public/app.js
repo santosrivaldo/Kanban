@@ -67,11 +67,40 @@ function showView(name) {
   if (name === 'docs') loadDoc(document.querySelector('.doc-link.active')?.dataset.doc || 'README');
 }
 
+let peopleList = [];
+
+async function loadPeople() {
+  try {
+    peopleList = await api('/api/people');
+  } catch {
+    peopleList = [];
+  }
+  renderPeopleList();
+  fillAssigneeSelect();
+}
+
+function renderPeopleList() {
+  const el = document.getElementById('people-list');
+  if (!el) return;
+  el.innerHTML = peopleList.length === 0
+    ? '<span class="people-empty">Nenhuma pessoa cadastrada</span>'
+    : peopleList.map((p) => `<span class="person-chip ${p.online ? 'online' : ''}" title="${escapeHtml(p.name)} ${p.online ? '• online' : '• offline'}">${escapeHtml(p.name)}</span>`).join('');
+}
+
+function fillAssigneeSelect() {
+  const sel = document.getElementById('card-assignee');
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Ninguém</option>' + peopleList.map((p) => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}${p.online ? ' ●' : ''}</option>`).join('');
+  if (current && peopleList.some((p) => p.name === current)) sel.value = current;
+}
+
 async function loadBoard() {
   const [board, columns] = await Promise.all([
     api('/api/board'),
     api('/api/board/columns'),
   ]);
+  await loadPeople();
   document.getElementById('board-name').textContent = board.name;
   const container = document.getElementById('columns');
   container.innerHTML = '';
@@ -164,6 +193,7 @@ const modal = document.getElementById('modal-card');
 const form = document.getElementById('form-card');
 
 function openNewCard(columnId) {
+  fillAssigneeSelect();
   document.getElementById('modal-title').textContent = 'Nova tarefa';
   document.getElementById('card-id').value = '';
   document.getElementById('card-column-id').value = columnId || '';
@@ -175,6 +205,7 @@ function openNewCard(columnId) {
 }
 
 function openEditCard(card) {
+  fillAssigneeSelect();
   document.getElementById('modal-title').textContent = 'Editar tarefa';
   document.getElementById('card-id').value = card.id;
   document.getElementById('card-column-id').value = card.columnId;

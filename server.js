@@ -6,6 +6,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { requireXToken } from './api/middleware/auth.js';
 import { registerKanbanRoutes } from './api/routes/kanban.js';
+import { registerPeopleRoutes } from './api/routes/people.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -41,8 +42,10 @@ app.use('/api/board', requireXToken);
 app.use('/api/columns', requireXToken);
 app.use('/api/cards', requireXToken);
 app.use('/api/timeline', requireXToken);
+app.use('/api/people', requireXToken);
 
 registerKanbanRoutes(app);
+registerPeopleRoutes(app);
 
 // SPA fallback
 app.get('*', (req, res) => {

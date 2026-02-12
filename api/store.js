@@ -18,6 +18,7 @@ let data = {
     { id: 'col-done', boardId: 'board-1', title: 'Concluído', order: 4 },
   ],
   events: [],
+  people: [],
   cards: [
     {
       id: 'card-1',
@@ -83,6 +84,36 @@ export const store = {
     };
     data.events.push(ev);
     return ev;
+  },
+  getPeople() {
+    return [...data.people];
+  },
+  getPerson(personId) {
+    return data.people.find((p) => p.id === personId) ?? null;
+  },
+  addPerson({ name, online = false }) {
+    const person = {
+      id: `person-${id()}`,
+      name: (name || '').trim(),
+      online: Boolean(online),
+      updatedAt: new Date().toISOString(),
+    };
+    data.people.push(person);
+    return person;
+  },
+  updatePerson(personId, updates) {
+    const person = data.people.find((p) => p.id === personId);
+    if (!person) return null;
+    if (updates.name !== undefined) person.name = String(updates.name).trim();
+    if (updates.online !== undefined) person.online = Boolean(updates.online);
+    person.updatedAt = new Date().toISOString();
+    return person;
+  },
+  deletePerson(personId) {
+    const i = data.people.findIndex((p) => p.id === personId);
+    if (i === -1) return false;
+    data.people.splice(i, 1);
+    return true;
   },
   getTimeline(agentFilter) {
     let list = [...data.events];

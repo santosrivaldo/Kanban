@@ -101,7 +101,38 @@ GET /api/timeline?agent=<nome>
 
 As ações de criar, mover, editar e remover cards registram o header **X-Agent** (opcional); se não enviado, usa-se `"Web"`.
 
-### 3.9 Remover card
+### 3.9 Pessoas (equipe)
+
+Usadas como responsáveis nas tarefas. Nome e status online.
+
+```
+GET /api/people
+```
+- **Auth:** sim
+- **Resposta 200:** array de pessoas (`id`, `name`, `online`, `updatedAt`)
+
+```
+POST /api/people
+```
+- **Auth:** sim
+- **Body:** `name` (obrigatório), `online` (opcional, boolean, default false)
+- **Resposta 201:** objeto da pessoa criada
+- **Resposta 400:** `{ "error": "name é obrigatório" }`
+
+```
+PATCH /api/people/:id
+```
+- **Auth:** sim
+- **Body:** `name`, `online` (opcionais)
+- **Resposta 200:** pessoa atualizada | **404:** pessoa não encontrada
+
+```
+DELETE /api/people/:id
+```
+- **Auth:** sim
+- **Resposta 204:** sem corpo | **404:** pessoa não encontrada
+
+### 3.10 Remover card
 
 ```
 DELETE /api/cards/:cardId
