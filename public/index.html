@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kanban Sprint</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <div class="header-inner">
+        <h1 class="logo">Kanban Sprint</h1>
+        <nav class="header-nav" role="tablist">
+          <button type="button" class="header-link nav-tab active" data-view="board" role="tab">Board</button>
+          <button type="button" class="header-link nav-tab" data-view="timeline" role="tab">Timeline</button>
+          <button type="button" class="header-link nav-tab" data-view="docs" role="tab">Documentação</button>
+        </nav>
+        <div class="token-wrap">
+          <label for="x-token">X-Token</label>
+          <input id="x-token" type="password" placeholder="Token de acesso" autocomplete="off" />
+          <button type="button" id="btn-save-token" aria-label="Salvar token">Salvar</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div id="token-screen" class="token-screen">
+        <p>Informe o <strong>X-Token</strong> no campo do cabeçalho e clique em Salvar para carregar.</p>
+      </div>
+
+      <div id="views" class="views hidden">
+        <!-- Board -->
+        <div id="view-board" class="view-panel" role="tabpanel" hidden>
+          <div class="board-wrap">
+            <div class="board-header">
+              <h2 id="board-name">Sprint Atual</h2>
+              <button type="button" id="btn-new-card" class="btn-primary">Nova tarefa</button>
+            </div>
+            <div id="columns" class="columns"></div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div id="view-timeline" class="view-panel" role="tabpanel" hidden>
+          <div class="timeline-filters">
+            <label for="filter-agent">Filtrar por agente</label>
+            <select id="filter-agent">
+              <option value="">Todos os agentes</option>
+            </select>
+            <button type="button" id="btn-timeline-refresh" class="btn-secondary">Atualizar</button>
+          </div>
+          <div id="timeline-list" class="timeline-list"></div>
+          <div id="timeline-empty" class="timeline-empty hidden">Nenhuma atividade ainda.</div>
+        </div>
+
+        <!-- Documentação -->
+        <div id="view-docs" class="view-panel view-docs" role="tabpanel" hidden>
+          <div class="docs-inner">
+            <nav class="docs-nav">
+              <button type="button" class="doc-link active" data-doc="README">Índice</button>
+              <button type="button" class="doc-link" data-doc="API">Referência da API</button>
+              <button type="button" class="doc-link" data-doc="USO">Guia de uso</button>
+            </nav>
+            <div class="docs-content" id="docs-content">
+              <p class="docs-placeholder">Carregando…</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="error-toast" class="toast hidden" role="alert"></div>
+    </main>
+  </div>
+
+  <dialog id="modal-card" class="modal" aria-labelledby="modal-title">
+    <form id="form-card" class="modal-form">
+      <h3 id="modal-title">Nova tarefa</h3>
+      <input type="hidden" id="card-id" />
+      <input type="hidden" id="card-column-id" />
+      <label for="card-title">Título *</label>
+      <input id="card-title" name="title" required minlength="1" />
+      <label for="card-desc">Descrição</label>
+      <textarea id="card-desc" name="description" rows="3"></textarea>
+      <label for="card-assignee">Responsável</label>
+      <input id="card-assignee" name="assignee" />
+      <label for="card-priority">Prioridade</label>
+      <select id="card-priority" name="priority">
+        <option value="low">Baixa</option>
+        <option value="medium">Média</option>
+        <option value="high">Alta</option>
+      </select>
+      <div class="modal-actions">
+        <button type="button" id="btn-modal-cancel" class="btn-secondary">Cancelar</button>
+        <button type="submit" class="btn-primary">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

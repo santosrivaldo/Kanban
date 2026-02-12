@@ -1,0 +1,10 @@
+services:
+  kanban:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      X_TOKENS: ${X_TOKENS:-sprint-token-2025}
+    env_file:
+      - .env
