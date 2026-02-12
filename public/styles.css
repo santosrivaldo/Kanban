@@ -300,16 +300,30 @@ body {
   background: var(--bg-card);
   border-right: 1px solid var(--border);
   padding: 1rem;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .sidebar-section {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-width: 0;
+}
+
+.sidebar-section.sidebar-agents {
+  flex-shrink: 0;
+}
+
+.sidebar-section.sidebar-timeline {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .sidebar-title {
@@ -336,11 +350,7 @@ body {
   border-radius: 6px;
   font-size: 0.9rem;
   color: var(--text-muted);
-}
-
-.person-row.online {
-  color: var(--text);
-  background: rgba(52, 211, 153, 0.08);
+  border-left: 3px solid transparent;
 }
 
 .person-dot {
@@ -351,9 +361,82 @@ body {
   flex-shrink: 0;
 }
 
-.person-row.online .person-dot {
+/* Cores por status de trabalho */
+.person-row.status-disponivel {
+  color: var(--text);
+  background: rgba(52, 211, 153, 0.1);
+  border-left-color: var(--success);
+}
+.person-row.status-disponivel .person-dot {
   background: var(--success);
   box-shadow: 0 0 6px var(--success);
+}
+.person-row.status-disponivel .person-work-status {
+  color: var(--success);
+}
+
+.person-row.status-em-tarefa {
+  color: var(--text);
+  background: rgba(251, 191, 36, 0.1);
+  border-left-color: var(--warning);
+}
+.person-row.status-em-tarefa .person-dot {
+  background: var(--warning);
+  box-shadow: 0 0 6px var(--warning);
+}
+.person-row.status-em-tarefa .person-work-status {
+  color: var(--warning);
+}
+
+.person-row.status-em-reuniao {
+  color: var(--text);
+  background: rgba(167, 139, 250, 0.12);
+  border-left-color: #a78bfa;
+}
+.person-row.status-em-reuniao .person-dot {
+  background: #a78bfa;
+  box-shadow: 0 0 6px #a78bfa;
+}
+.person-row.status-em-reuniao .person-work-status {
+  color: #a78bfa;
+}
+
+.person-row.status-pausa {
+  color: var(--text-muted);
+  background: rgba(113, 113, 122, 0.08);
+  border-left-color: var(--text-muted);
+}
+.person-row.status-pausa .person-dot {
+  background: var(--text-muted);
+}
+.person-row.status-pausa .person-work-status {
+  color: var(--text-muted);
+}
+
+.person-row.status-offline {
+  color: var(--text-muted);
+  background: transparent;
+  border-left-color: var(--border);
+}
+.person-row.status-offline .person-dot {
+  background: var(--text-muted);
+  opacity: 0.7;
+}
+.person-row.status-offline .person-work-status {
+  color: var(--text-muted);
+}
+
+.person-row.status-outros {
+  color: var(--text);
+  background: rgba(34, 211, 238, 0.08);
+  border-left-color: var(--accent);
+}
+.person-row.status-outros .person-dot {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+}
+.person-row.status-outros .person-work-status {
+  color: var(--accent);
 }
 
 .person-info {
@@ -377,10 +460,6 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.person-row.online .person-work-status {
-  color: var(--accent);
 }
 
 .people-empty {
@@ -708,8 +787,14 @@ body {
 }
 
 .sidebar-timeline .timeline-list {
-  max-height: 240px;
+  flex: 1;
+  min-height: 120px;
   overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-timeline .timeline-filters {
+  flex-shrink: 0;
 }
 
 .timeline-filters {
@@ -833,7 +918,7 @@ body {
     min-width: 0;
   }
   .sidebar-timeline .timeline-list {
-    max-height: 160px;
+    min-height: 120px;
   }
   .board-main {
     padding: 1rem;
@@ -896,8 +981,12 @@ body {
   .board-sidebar .sidebar-section {
     flex: none;
   }
+  .sidebar-timeline {
+    flex: 1;
+    min-height: 120px;
+  }
   .sidebar-timeline .timeline-list {
-    max-height: 140px;
+    min-height: 80px;
   }
   .board-main {
     padding: 0.75rem;

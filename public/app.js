@@ -104,6 +104,21 @@ async function loadPeople() {
   fillAssigneeSelect();
 }
 
+function statusToClass(status) {
+  const s = (status || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '-')
+    .trim();
+  if (!s || s === 'offline') return 'status-offline';
+  if (s === 'disponivel') return 'status-disponivel';
+  if (s === 'em-tarefa' || s === 'ocupado' || s === 'em-tarefa') return 'status-em-tarefa';
+  if (s === 'em-reuniao') return 'status-em-reuniao';
+  if (s === 'pausa' || s === 'ausente') return 'status-pausa';
+  return 'status-outros';
+}
+
 function renderPeopleList() {
   const el = document.getElementById('people-list');
   const empty = document.getElementById('people-empty');
@@ -116,8 +131,9 @@ function renderPeopleList() {
   if (empty) empty.classList.add('hidden');
   el.innerHTML = peopleList.map((p) => {
     const status = (p.workStatus || '').trim() || (p.online ? 'Disponível' : 'Offline');
+    const statusClass = statusToClass(status);
     return `
-    <div class="person-row ${p.online ? 'online' : ''}" title="${escapeHtml(p.name)} • ${escapeHtml(status)}">
+    <div class="person-row person-status ${statusClass}" title="${escapeHtml(p.name)} • ${escapeHtml(status)}">
       <span class="person-dot"></span>
       <div class="person-info">
         <span class="person-name">${escapeHtml(p.name)}</span>
