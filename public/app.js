@@ -42,11 +42,29 @@ function showToast(message, isSuccess = false) {
 }
 
 function showTokenScreen() {
+  stopBoardRefresh();
   document.getElementById('token-screen').classList.remove('hidden');
   document.getElementById('views').classList.add('hidden');
 }
 
 let currentView = 'board';
+const BOARD_REFRESH_MS = 10000; // 10 segundos
+let refreshIntervalId = null;
+
+function startBoardRefresh() {
+  stopBoardRefresh();
+  refreshIntervalId = setInterval(() => {
+    if (currentView !== 'board') return;
+    loadBoard().catch(() => {});
+  }, BOARD_REFRESH_MS);
+}
+
+function stopBoardRefresh() {
+  if (refreshIntervalId) {
+    clearInterval(refreshIntervalId);
+    refreshIntervalId = null;
+  }
+}
 
 function showView(name) {
   currentView = name;
@@ -63,7 +81,12 @@ function showView(name) {
   const panel = document.getElementById(`view-${name}`);
   if (panel) panel.hidden = false;
 
-  if (name === 'timeline') loadTimeline();
+  if (name === 'board') {
+    loadTimeline();
+    startBoardRefresh();
+  } else {
+    stopBoardRefresh();
+  }
   if (name === 'docs') loadDoc(document.querySelector('.doc-link.active')?.dataset.doc || 'README');
 }
 
@@ -122,6 +145,7 @@ async function loadBoard() {
     setupColumnDrop(colEl, cardsContainer);
     container.appendChild(colEl);
   }
+  loadTimeline();
 }
 
 function escapeHtml(s) {
@@ -396,6 +420,7 @@ async function loadDoc(name) {
 document.querySelectorAll('.nav-tab').forEach((tab) => {
   tab.addEventListener('click', () => {
     const view = tab.dataset.view;
+    if (view === 'timeline') return; // timeline está no board
     showView(view);
     window.location.hash = view === 'board' ? '' : view;
   });
@@ -429,8 +454,8 @@ document.getElementById('x-token').addEventListener('keydown', (e) => {
 
 function applyHashView() {
   const hash = (window.location.hash || '').replace(/^#/, '');
-  if (hash === 'timeline' || hash === 'docs') {
-    showView(hash);
+  if (hash === 'docs') {
+    showView('docs');
   } else {
     showView('board');
   }

@@ -578,11 +578,17 @@ body {
   color: var(--bg);
 }
 
-/* Timeline */
-#view-timeline {
-  max-width: 640px;
-  margin: 0 auto;
-  width: 100%;
+/* Timeline (na página do board) */
+.board-timeline {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  max-width: 720px;
+}
+
+.board-timeline .timeline-list {
+  max-height: 280px;
+  overflow-y: auto;
 }
 
 .timeline-filters {

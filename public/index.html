@@ -17,7 +17,6 @@
         <h1 class="logo">Kanban Sprint</h1>
         <nav class="header-nav" role="tablist">
           <button type="button" class="header-link nav-tab active" data-view="board" role="tab">Board</button>
-          <button type="button" class="header-link nav-tab" data-view="timeline" role="tab">Timeline</button>
           <button type="button" class="header-link nav-tab" data-view="docs" role="tab">Documentação</button>
         </nav>
         <div class="token-wrap">
@@ -48,20 +47,18 @@
               </div>
             </div>
             <div id="columns" class="columns"></div>
+            <section class="board-timeline" aria-label="Timeline">
+              <div class="timeline-filters">
+                <label for="filter-agent">Timeline</label>
+                <select id="filter-agent">
+                  <option value="">Todos os agentes</option>
+                </select>
+                <button type="button" id="btn-timeline-refresh" class="btn-secondary">Atualizar</button>
+              </div>
+              <div id="timeline-list" class="timeline-list"></div>
+              <div id="timeline-empty" class="timeline-empty hidden">Nenhuma atividade ainda.</div>
+            </section>
           </div>
-        </div>
-
-        <!-- Timeline -->
-        <div id="view-timeline" class="view-panel" role="tabpanel" hidden>
-          <div class="timeline-filters">
-            <label for="filter-agent">Filtrar por agente</label>
-            <select id="filter-agent">
-              <option value="">Todos os agentes</option>
-            </select>
-            <button type="button" id="btn-timeline-refresh" class="btn-secondary">Atualizar</button>
-          </div>
-          <div id="timeline-list" class="timeline-list"></div>
-          <div id="timeline-empty" class="timeline-empty hidden">Nenhuma atividade ainda.</div>
         </div>
 
         <!-- Documentação -->
